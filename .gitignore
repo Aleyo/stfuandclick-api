@@ -1,0 +1,5 @@
+dist
+node_modules
+.idea
+src/config/local.ts
+src/config/env/*.local.ts
