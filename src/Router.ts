@@ -1,13 +1,14 @@
 import { Request, Response, Application } from 'express';
 
+import { ClickController } from './controller/ClickController';
+
 export class Router {
+
+  private clickController: ClickController = new ClickController();
+
   public routes(app: Application): void {
-    app.route('/')
-      .get((req: Request, res: Response) => {
-        res.status(200).send({
-          message: 'Hello world!'
-        });
-      });
+    app.route('/klik')
+      .post(this.clickController.addClick);
 
     app.route('*')
       .get((req: Request, res: Response) => {
@@ -16,4 +17,5 @@ export class Router {
         });
       });
   }
+
 }
