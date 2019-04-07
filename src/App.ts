@@ -1,9 +1,9 @@
-import * as express from "express";
-import * as bodyParser from "body-parser";
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 
 import config from 'mikro-config';
-import { Router } from "./Router";
+import { Router } from './Router';
 
 class App {
 

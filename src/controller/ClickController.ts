@@ -7,8 +7,8 @@ const teamService = new TeamService();
 export class ClickController {
 
   public async addClick(req: Request, res: Response) {
-    if (req.body.team == undefined || req.body.team == "" ||
-        req.body.session == undefined || req.body.session == "") {
+    if (req.body.team == undefined || req.body.team == '' ||
+        req.body.session == undefined || req.body.session == '') {
       res.status(400).json({
         success: false,
         message: 'Invalid team or session',
@@ -24,7 +24,7 @@ export class ClickController {
     team = await teamService.incrementScore(req.body.team);
 
     res.json({
-      your_clicks: "TODO",
+      your_clicks: 'TODO',
       team_clicks: team.clicks,
     });
   }

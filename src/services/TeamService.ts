@@ -8,7 +8,6 @@ export interface ITeam {
   createdAt: Date,
 }
 
-
 export class TeamService {
 
   private Team = model('Team', TeamSchema);
@@ -19,11 +18,11 @@ export class TeamService {
 
   public async addTeam(teamName: string): Promise<ITeam> {
     const newTeam = new this.Team({ name: teamName });
-    return await newTeam.save().catch(err => console.log("Team already exist or bad structure."));
+    return await newTeam.save().catch(err => console.log('Team already exist or bad structure.'));
   }
 
   public async incrementScore(teamName: string): Promise<ITeam | undefined> {
-    await this.Team.update({ name: teamName }, { $inc: { clicks: 1 } });
+    await this.Team.updateOne({ name: teamName }, { $inc: { clicks: 1 } });
     return await this.getTeam(teamName);
   }
 
