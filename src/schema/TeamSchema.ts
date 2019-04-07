@@ -6,10 +6,10 @@ export const TeamSchema = new Schema({
     required: true,
     unique: true,
   },
-  clicks: {
-    type: Number,
-    default: 0,
-  },
+  clicks: [{
+    session: String,
+    clicks: Number,
+  }],
   created_date: {
     type: Date,
     default: Date.now,

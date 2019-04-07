@@ -21,11 +21,11 @@ export class ClickController {
     if (team == undefined)
       await teamService.addTeam(req.body.team);
 
-    team = await teamService.incrementScore(req.body.team);
+    team = await teamService.incrementScore(req.body.team, req.body.session);
 
     res.json({
-      your_clicks: 'TODO',
-      team_clicks: team.clicks,
+      your_clicks: teamService.getSessionScore(team, req.body.session),
+      team_clicks: teamService.getTeamScore(team),
     });
   }
 
