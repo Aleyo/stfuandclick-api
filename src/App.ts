@@ -8,18 +8,21 @@ import { Router } from './Router';
 class App {
 
   public app: express.Application = express();
+  public api: express.Application = express();
+
   public router: Router = new Router();
 
   constructor() {
     this.config();
     this.mongoSetup();
-    this.router.routes(this.app);
+    this.router.routes(this.api);
   }
 
   private config(): void {
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({ extended: false }));
-    this.app.use((err, req, res, next) => {
+    this.app.use('/api', this.api);
+    this.api.use(bodyParser.json());
+    this.api.use(bodyParser.urlencoded({ extended: false }));
+    this.api.use((err, req, res, next) => {
       if (err) {
         console.log(err);
         res.sendStatus(400);
