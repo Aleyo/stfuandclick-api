@@ -6,7 +6,7 @@ export const TeamSchema = new Schema({
     required: true,
     unique: true,
   },
-  clicks: [{
+  clickers: [{
     session: String,
     clicks: Number,
   }],

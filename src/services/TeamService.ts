@@ -4,11 +4,18 @@ import { TeamSchema } from '../schema/TeamSchema';
 
 export interface ITeam {
   name: string,
-  clicks: [{
+  clicks?: number,
+  clickers: [{
     session: string,
     clicks: number,
   }],
   createdAt: Date,
+}
+
+export interface ILeaderboardItem {
+  order: number,
+  team: string,
+  clicks: number,
 }
 
 export class TeamService {
@@ -16,7 +23,14 @@ export class TeamService {
   private Team = model('Team', TeamSchema);
 
   public async getTeam(teamName: string): Promise<ITeam | undefined> {
-    return (await this.Team.find({ name: teamName }))[0];
+    const team = await this.Team.aggregate([{
+      $match: { name: teamName }
+    }, {
+      $addFields: {
+        clicks: { $sum: "$clickers.clicks" }
+      }
+    }]);
+    return team[0];
   }
 
   public async addTeam(teamName: string): Promise<ITeam> {
@@ -25,7 +39,7 @@ export class TeamService {
   }
 
   public async incrementScore(teamName: string, session: string): Promise<ITeam | undefined> {
-    const searchValues = { name: teamName, 'clicks.session': session};
+    const searchValues = { name: teamName, 'clickers.session': session};
     const checkSession = await this.Team.find(searchValues);
 
     if (!checkSession.length)
@@ -33,11 +47,11 @@ export class TeamService {
         name: teamName
       }, {
         $push: {
-          'clicks': { session, clicks: 1 }
+          'clickers': { session, clicks: 1 }
         }
       });
     else
-      await this.Team.updateOne(searchValues, { $inc: { 'clicks.$.clicks': 1 } });
+      await this.Team.updateOne(searchValues, { $inc: { 'clickers.$.clicks': 1 } });
 
     return await this.getTeam(teamName);
   }
@@ -45,7 +59,7 @@ export class TeamService {
   public getSessionScore(team: ITeam, session: string): number {
     let counter = 0;
 
-    team.clicks.forEach(click => {
+    team.clickers.forEach(click => {
       if (click.session == session) {
         counter = click.clicks;
         return;
@@ -55,10 +69,23 @@ export class TeamService {
     return counter;
   }
 
-  public getTeamScore(team: ITeam): number {
-    let counter = 0;
-    team.clicks.forEach(click => counter += click.clicks);
-    return counter;
+  public async getTopTeams(limit: number = 10): Promise<[ILeaderboardItem]> {
+    const teams = await this.Team.aggregate([{
+      $project: {
+        _id: 0,
+        order: "0",
+        team: "$name",
+        clicks: { $sum: "$clickers.clicks" }
+      }
+    }, {
+      $sort: { clicks: -1 }
+    }, {
+      $limit: limit
+    }]);
+
+    let counter = 1;
+    teams.forEach( e => e. order = counter++);
+    return teams;
   }
 
 }

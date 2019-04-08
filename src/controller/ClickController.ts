@@ -25,7 +25,7 @@ export class ClickController {
 
     res.json({
       your_clicks: teamService.getSessionScore(team, req.body.session),
-      team_clicks: teamService.getTeamScore(team),
+      team_clicks: team.clicks,
     });
   }
 
